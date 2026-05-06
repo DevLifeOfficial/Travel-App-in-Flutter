@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Gusky/pages/Home/home.dart';
+import 'package:Gusky/screens/Home/home_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => Home()),
+        MaterialPageRoute(builder: (_) => HomePage()),
       );
     });
   }
@@ -50,12 +50,12 @@ class _SplashScreenState extends State<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/logo.png',
+                'assets/images/mountain.png',
                 height: 120,
               ),
               SizedBox(height: 20),
               Text(
-                "Your App Name",
+                "Gusky",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
