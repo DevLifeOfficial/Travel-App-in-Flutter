@@ -1,3 +1,4 @@
+import 'package:Gusky/screens/Package/package.dart';
 import 'package:Gusky/widgets/AppBottomNav.dart';
 import 'package:flutter/material.dart';
 import 'package:Gusky/data/app_constants.dart';
@@ -27,21 +28,27 @@ class _SearchScreenState extends State<SearchScreen> {
       _query = value.toLowerCase();
 
       _filteredPackages = mockPackages
-          .where((pkg) =>
-              pkg.title.toLowerCase().contains(_query) ||
-              pkg.destination.toLowerCase().contains(_query))
+          .where(
+            (pkg) =>
+                pkg.title.toLowerCase().contains(_query) ||
+                pkg.destination.toLowerCase().contains(_query),
+          )
           .toList();
 
       _filteredHotels = mockHotels
-          .where((hotel) =>
-              hotel.name.toLowerCase().contains(_query) ||
-              hotel.city.toLowerCase().contains(_query))
+          .where(
+            (hotel) =>
+                hotel.name.toLowerCase().contains(_query) ||
+                hotel.city.toLowerCase().contains(_query),
+          )
           .toList();
 
       _filteredPlaces = mockPlaces
-          .where((place) =>
-              place.name.toLowerCase().contains(_query) ||
-              place.city.toLowerCase().contains(_query))
+          .where(
+            (place) =>
+                place.name.toLowerCase().contains(_query) ||
+                place.city.toLowerCase().contains(_query),
+          )
           .toList();
     });
   }
@@ -55,76 +62,82 @@ class _SearchScreenState extends State<SearchScreen> {
         backgroundColor: AppColors.primary,
         title: const Text("Search", style: AppTextStyles.heroTitle),
       ),
-      body:SafeArea(child: 
-       Column(
-        children: [
-          _buildSearchBar(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildSearchBar(),
 
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-              children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                children: [
+                  /// 🔹 PACKAGES
+                  if (_filteredPackages.isNotEmpty) ...[
+                    _sectionTitle("Packages"),
 
-                /// 🔹 PACKAGES
-                if (_filteredPackages.isNotEmpty) ...[
-                  _sectionTitle("Packages"),
+                    SizedBox(
+                      height: 280,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _filteredPackages.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(width: AppSpacing.sm),
+                        itemBuilder: (_, i) {
+                          return PackageCard(
+                            package: _filteredPackages[i],
+                            onTap: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return PackageDetailsScreen(
+                                      package: _filteredPackages[i],
+                                    );
+                                  },
+                                ),
+                              ),
+                            },
+                          );
+                        },
+                      ),
+                    ),
 
-                  SizedBox(
-                    height: 280,
-                    child: ListView.separated(
+                    const SizedBox(height: AppSpacing.lg),
+                  ],
+
+                  /// 🔹 PLACES
+                  if (_filteredPlaces.isNotEmpty) ...[
+                    _sectionTitle("Places"),
+
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _filteredPackages.length,
+                        horizontal: AppSpacing.xs,
+                      ),
+                      itemCount: _filteredPlaces.length,
                       separatorBuilder: (_, __) =>
-                          const SizedBox(width: AppSpacing.sm),
+                          const SizedBox(height: AppSpacing.xs),
                       itemBuilder: (_, i) {
-                        return PackageCard(
-                          package: _filteredPackages[i],
-
-                        );
+                        return PlaceCard(place: _filteredPlaces[i]);
                       },
                     ),
-                  ),
+                  ],
 
-                  const SizedBox(height: AppSpacing.lg),
+                  /// 🔹 EMPTY STATE
+                  if (_filteredPackages.isEmpty && _filteredPlaces.isEmpty)
+                    _emptyState(),
                 ],
-
-                /// 🔹 PLACES
-                if (_filteredPlaces.isNotEmpty) ...[
-                  _sectionTitle("Places"),
-
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xs),
-                    itemCount: _filteredPlaces.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.xs),
-                    itemBuilder: (_, i) {
-                      return PlaceCard(
-                        place: _filteredPlaces[i],
-                      );
-                    },
-                  ),
-                ],
-
-                /// 🔹 EMPTY STATE
-                if (_filteredPackages.isEmpty &&
-                    _filteredPlaces.isEmpty)
-                  _emptyState(),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-
-      
-    ), 
-    bottomNavigationBar: AppBottomNav(currentIndex: 0),);
-
-    
+      bottomNavigationBar: AppBottomNav(currentIndex: 0),
+    );
   }
 
   /// 🔍 SEARCH BAR
@@ -140,7 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
               color: AppColors.cardShadow,
               blurRadius: 10,
               offset: const Offset(0, 4),
-            )
+            ),
           ],
         ),
         child: TextField(
@@ -152,8 +165,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             prefixIcon: const Icon(Icons.search),
             border: InputBorder.none,
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
         ),
       ),
@@ -169,10 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
         AppSpacing.md,
         AppSpacing.sm,
       ),
-      child: Text(
-        title,
-        style: AppTextStyles.sectionTitle,
-      ),
+      child: Text(title, style: AppTextStyles.sectionTitle),
     );
   }
 
@@ -182,13 +191,9 @@ class _SearchScreenState extends State<SearchScreen> {
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         children: [
-          Icon(Icons.search_off,
-              size: 60, color: AppColors.textHint),
+          Icon(Icons.search_off, size: 60, color: AppColors.textHint),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            "No results found",
-            style: AppTextStyles.sectionTitle,
-          ),
+          Text("No results found", style: AppTextStyles.sectionTitle),
           const SizedBox(height: AppSpacing.sm),
           Text(
             "Try searching something else",
@@ -199,6 +204,4 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-
-  
 }
